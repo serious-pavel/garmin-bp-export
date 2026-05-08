@@ -40,11 +40,6 @@ folder, or pass a full path to `--output`.
 Add `--debug-json` to save the raw Garmin response as a `.json` file next to
 the CSV.
 
-## Timestamp formats
-
-Use `--timestamp-format date`, `--timestamp-format time`, or leave the default
-`datetime`.
-
 The script now reads the actual measurement entries from Garmin's response, so
 the CSV includes the real measurement time when Garmin provides it.
 

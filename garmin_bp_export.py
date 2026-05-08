@@ -71,12 +71,6 @@ def parse_args() -> argparse.Namespace:
         help="Directory for CSV output when --output is not an explicit path.",
     )
     parser.add_argument(
-        "--timestamp-format",
-        choices=("datetime", "date", "time"),
-        default="datetime",
-        help="Choose the first CSV column format.",
-    )
-    parser.add_argument(
         "--token-cache",
         default=str(Path.home() / ".garminconnect"),
         help="Path for persisted Garmin tokens.",
@@ -423,11 +417,7 @@ def write_debug_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
 
 
-def format_timestamp(value: datetime, mode: str) -> str:
-    if mode == "date":
-        return value.date().isoformat()
-    if mode == "time":
-        return value.astimezone().strftime("%H:%M:%S")
+def format_timestamp(value: datetime) -> str:
     return value.astimezone().isoformat(timespec="seconds")
 
 
@@ -522,7 +512,7 @@ def main() -> int:
         for row in rows:
             writer.writerow(
                 {
-                    "datetime": format_timestamp(row.timestamp, args.timestamp_format),
+                    "datetime": format_timestamp(row.timestamp),
                     "systolic": row.systolic,
                     "diastolic": row.diastolic,
                     "comment": row.comment,
