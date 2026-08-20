@@ -461,10 +461,20 @@ def fetch_blood_pressure(client: Any, start: date, end: date) -> Any:
 
 
 def login(client: Any, token_cache: str) -> None:
+    from garminconnect.exceptions import GarminConnectAuthenticationError
+
+    cache_path = Path(token_cache)
     try:
         client.login(token_cache)
+        return
     except TypeError:
-        client.login()
+        pass
+    except GarminConnectAuthenticationError:
+        # Cached token is expired or invalid — wipe it and fall through to fresh login.
+        for f in cache_path.glob("*") if cache_path.is_dir() else [cache_path]:
+            f.unlink(missing_ok=True)
+
+    client.login()
 
 
 def main() -> int:
